@@ -1,0 +1,102 @@
+version: "2.0"
+stories:
+- story: Happy Order Path
+  steps:
+  - intent: i_am_hungry
+  - action: utter_ask_mcd
+  - intent: affirm
+  - action: action_login
+  - slot_was_set:
+    - state: logged_in
+  - action: utter_ask_order
+- story: Force McD Path
+  steps:
+  - intent: i_am_hungry
+  - action: utter_ask_mcd
+  - intent: deny
+  - action: utter_mcd_only
+  - action: action_login
+  - slot_was_set:
+    - state: logged_in
+  - action: utter_ask_order
+- story: Force McD Path 2
+  steps:
+  - intent: i_am_hungry
+  - action: utter_ask_mcd
+  - intent: no_mcd
+  - action: utter_mcd_only
+  - slot_was_set:
+    - state: logged_in
+  - action: utter_ask_order
+- story: Normal Order Path
+  steps:
+  - intent: order
+  - action: action_order
+  - slot_was_set:
+    - state: ordered
+  - action: utter_anything_else
+- story: Order Anything Path
+  steps:
+  - intent: order_anything
+  - action: utter_acknowledge_order_anything
+  - action: action_order
+  - slot_was_set:
+    - state: ordered
+  - action: utter_anything_else
+- story: Check Cart
+  steps:
+  - intent: check_cart
+  - action: action_check_cart
+  - action: utter_anything_else
+- story: Clear Cart
+  steps:
+  - intent: clear_cart
+  - action: action_clear_cart
+  - slot_was_set:
+    - state: cart_cleared
+  - action: utter_anything_else
+- story: Checkout + Read Order + Payment Success Path
+  steps:
+  - intent: confirm_order
+  - action: action_check_cart
+  - slot_was_set:
+    - state: cart_viewed
+  - action: action_checkout
+  - slot_was_set:
+    - state: payment_triggered
+  - intent: payment_success
+  - action: action_payment_success
+  - slot_was_set:
+    - state: payment_success
+  - action: action_restart
+- story: Checkout with no read order
+  steps:
+  - intent: check_cart
+  - action: action_check_cart
+  - slot_was_set:
+    - state: cart_viewed
+  - action: utter_anything_else
+  - intent: confirm_order
+  - action: utter_confirm_checkout
+  - action: action_checkout
+- story: Checkout with payment_retry
+  steps:
+  - intent: check_cart
+  - action: action_check_cart
+  - slot_was_set:
+    - state: cart_viewed
+  - action: utter_anything_else
+  - intent: confirm_order
+  - action: utter_confirm_checkout
+  - action: action_checkout
+  - slot_was_set:
+    - state: payment_triggered
+  - intent: retry_payment
+  - action: action_retry_payment
+  - slot_was_set:
+    - state: payment_triggered
+  - intent: payment_success
+  - action: action_payment_success
+  - slot_was_set:
+    - state: payment_success
+  - action: action_restart
